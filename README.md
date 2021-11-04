@@ -40,6 +40,19 @@ http.req = req
 
 3. 剩下的就是根据用户输入的数据发起网络请求，并处理后台返回的数据
 
+4.还有就是遇到一了一个奇葩的问题，就是控制台莫名的报错，百度是这么说的：
+控制台的报错：
+sockjs.js?9be2:1606 GET http://192.168.16.213:8080/sockjs-node/info?t=1574662800493 net::ERR_CONNECTION_TIMED_OUT
+
+错误分析：
+  sockjs-node是一个JavaScript库，提供跨浏览器JavaScript的API，创建了一个低延迟、全双工的浏览器和web服务器之间通信通道。
+在项目运行以后，network会一直调用这个接口。如果没有使用，那么就一直会报这个异常。
+
+解决办法：
+1.找到/node_modules/sockjs-client/dist/sockjs.js
+2.在报错行，注释掉self.xhr.send(payload);这一行，然后就可以解决了
+
+
 ```
 
 ### Compiles and hot-reloads for development
