@@ -5,11 +5,10 @@
 ## 用到的技术栈：Vue + node.js + Element-ui + axios
 
 ### 一、登录功能
+#### 1、借助Element-ui对页面完成布局
+
+#### 2、网络请求用到了axios，进行了简单的封装
 ```
-1.借助Element-ui对页面完成布局
-
-2.网络请求用到了axios，进行了简单的封装
-
 import axios from 'axios'
 
 // 封装一个axios请求方法
@@ -37,10 +36,11 @@ function req (path, mode, object) {
 // 将封装好的方法存入对象中（目的是将该方法挂到原型上提供每个页面直接调用）
 export const http = {}
 http.req = req
+```
+#### 3、剩下的就是根据用户输入的数据发起网络请求，并处理后台返回的数据
 
-3. 剩下的就是根据用户输入的数据发起网络请求，并处理后台返回的数据
-
-4.还有就是遇到一了一个奇葩的问题，就是控制台莫名的报错，百度是这么说的：
+#### 4、还有就是遇到一了一个奇葩的问题，就是控制台莫名的报错，百度是这么说的：
+```
 控制台的报错：
 sockjs.js?9be2:1606 GET http://192.168.16.213:8080/sockjs-node/info?t=1574662800493 net::ERR_CONNECTION_TIMED_OUT
 
@@ -51,8 +51,6 @@ sockjs.js?9be2:1606 GET http://192.168.16.213:8080/sockjs-node/info?t=1574662800
 解决办法：
 1.找到/node_modules/sockjs-client/dist/sockjs.js
 2.在报错行，注释掉self.xhr.send(payload);这一行，然后就可以解决了
-
-
 ```
 
 ### Compiles and hot-reloads for development
