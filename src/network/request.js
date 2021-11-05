@@ -15,10 +15,18 @@ function req (path, mode, object) {
     return config
   })
 
+  /* instance.interceptors.response.use(config => {
+    console.log(config)
+    // 放行响应数据
+    return config
+  }) */
+
   if (mode === 'get') {
     return instance(path, object)
   } else if (mode === 'post') {
     return instance.post(path, object)
+  } else if (mode === 'put') {
+    return instance.put(path, object)
   }
 }
 

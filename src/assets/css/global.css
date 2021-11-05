@@ -4,3 +4,13 @@ html, body, #app {
   margin: 0;
   padding: 0;
 }
+
+/* 给每个面包屑加个下侧外边距 */
+.el-breadcrumb {
+  margin-bottom: 15px;
+}
+
+/* 给分页栏上方添加一个上外边距 */
+.el-pagination {
+  margin-top: 15px;
+}

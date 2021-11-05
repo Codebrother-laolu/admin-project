@@ -102,7 +102,6 @@ export default {
     // 获取左侧菜单列表数据
     async getMenuList () {
       const { data: res } = await this.$http.req('menus', 'get')
-      console.log(res)
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       // 将请求到的数据存放到menuList中
       this.menuList = res.data

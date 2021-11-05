@@ -92,7 +92,6 @@ export default {
     login () {
       // 执行校验检输入格式是否都正确
       this.$refs.loginFormRef.validate(async (valid) => {
-        console.log(valid)
         // 如果校验结果不正确返回false然后return出去
         if (!valid) return
         const { data: res } = await this.$http.req(
