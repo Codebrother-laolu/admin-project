@@ -53,10 +53,25 @@ sockjs.js?9be2:1606 GET http://192.168.16.213:8080/sockjs-node/info?t=1574662800
 2.在报错行，注释掉self.xhr.send(payload);这一行，然后就可以解决了
 ```
 
-### Compiles and hot-reloads for development
+### 二、用户管理功能
 ```
-npm run serve
+1、实现的功能
+  添加用户、删除用户、编辑用户、搜索用户、更改用户的状态、给每个用户分配角色
+  
+  大概的实现过程就是利用axios进行前后端的数据交互，当我根据对应的功能获取相应的数据再使用Element-ui进行数据的展示然后就收工了！
+  这里面对数据的处理我用到了一个作用域插槽，这个知识点是我不怎么熟悉这一波操作以后我大概对作用域插槽的使用方法和使用场景有了一个大概的认知
+  
+2、这次遇到了两个git提交的问题
+
+  问题一：提交的时候老是超时
+  解决办法：
+      取消代理：git config --global --unset https.proxy
+      
+  问题二：远程库与本地库不一致导致没办法正常提交代码
+  解决办法：
+      将远程仓库的代码拉到本地仓库中更新合并，并取消掉刚刚的commit：git pull --rebase origin master
 ```
+
 
 ### Compiles and minifies for production
 ```
