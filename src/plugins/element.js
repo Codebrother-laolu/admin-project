@@ -5,7 +5,7 @@ import {
   Header, Aside, Main, Container, Menu, Submenu,
   MenuItem, MenuItemGroup, Breadcrumb, BreadcrumbItem,
   Card, Col, Table, TableColumn, Switch, Tooltip, Pagination,
-  Dialog, MessageBox
+  Dialog, MessageBox, Carousel, CarouselItem
 } from 'element-ui'
 // import 'element-ui/lib/theme-chalk/index.css'
 // import 'element-ui/packages/theme-chalk/lib/base.css'
@@ -33,5 +33,7 @@ Vue.use(Switch)
 Vue.use(Tooltip)
 Vue.use(Pagination)
 Vue.use(Dialog)
+Vue.use(Carousel)
+Vue.use(CarouselItem)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
