@@ -144,7 +144,7 @@ export default {
 }
 
 .el-main {
-  background-color: rgb(219, 219, 219);
+  background-color: rgb(226, 226, 226);
 }
 
 .iconfont {

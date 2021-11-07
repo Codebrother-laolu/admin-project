@@ -84,20 +84,23 @@
           </template>
         </el-table-column>
         <el-table-column label="操作">
-          <template>
+          <template slot-scope="scope">
             <!-- 编辑按钮 -->
             <el-button
               type="primary"
               icon="el-icon-edit"
               size="mini"
+              @click="getEditUserInfo(scope.row)"
             ></el-button>
             <!-- 删除按钮 -->
             <el-button
               type="danger"
               icon="el-icon-delete"
               size="mini"
+              @click="removeUser(scope.row)"
             ></el-button>
             <!-- 分配角色按钮 -->
+            <!-- enterable：决定了提示框会不会在用户鼠标移入的时候消失 -->
             <el-tooltip
               content="分配角色"
               placement="top"
@@ -128,7 +131,7 @@
       </el-pagination>
       <!-- 分页栏区域 end -->
 
-      <!-- 对话框区域 begin -->
+      <!-- 添加用户对话框区域 begin -->
       <el-dialog
         title="提示"
         :visible.sync="addDialogVisible"
@@ -184,7 +187,62 @@
           >确 定</el-button>
         </span>
       </el-dialog>
-      <!-- 对话框区域 end -->
+      <!-- 添加用户对话框区域 end -->
+
+      <!-- 编辑用户对话框区域 -->
+      <el-dialog
+        title="用户编辑"
+        :visible.sync="editDialogVisible"
+        width="50%"
+        @close="editCloseDialog"
+      >
+        <!-- 用户编辑对话框主体区域 -->
+        <el-form
+          :model="editRuleForm"
+          :rules="editRules"
+          ref="editRefForm"
+          label-width="100px"
+        >
+          <!-- 用户名输入框 -->
+          <el-form-item
+            label="姓名"
+            prop="name"
+          >
+            <el-input
+              v-model="editRuleForm.name"
+              disabled
+            ></el-input>
+          </el-form-item>
+
+          <!-- 邮箱输入框 -->
+          <el-form-item
+            label="邮箱"
+            prop="email"
+          >
+            <el-input v-model="editRuleForm.email"></el-input>
+          </el-form-item>
+
+          <!-- 电话输入框 -->
+          <el-form-item
+            label="电话"
+            prop="mobile"
+          >
+            <el-input v-model="editRuleForm.mobile"></el-input>
+          </el-form-item>
+        </el-form>
+
+        <!-- 用户编辑对话框底部区域 -->
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="editDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="editUserInfo"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
 
     </el-card>
     <!-- 卡片区域 end -->
@@ -259,7 +317,28 @@ export default {
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
         ]
-      }
+      },
+      // 控制编辑对话框显示与隐藏的布尔值
+      editDialogVisible: false,
+      // 修改用户表单数据对象
+      editRuleForm: {
+        name: '',
+        email: '',
+        mobile: ''
+      },
+      // 修改用户表单验证对象
+      editRules: {
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: checkEmail, trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
+        ]
+      },
+      // 获取被编辑用户id
+      editUserId: ''
     }
   },
   created () {
@@ -313,14 +392,87 @@ export default {
         )
         if (res.meta.status !== 201) return this.$message.error('添加用户失败')
         this.$message.success('添加用户成功')
+        // 关闭对话框
         this.addDialogVisible = false
+        // 刷新用户列表数据
         this.getUserList()
       })
     },
     // 当点击添加用户对话框中的取消时触发（重置字段）
     closeDialog () {
-      // 重置表单
+      // 重置添加用户表单
       this.$refs.addRuleForm.resetFields()
+    },
+    // 当点击编辑用户时触发
+    async getEditUserInfo (userInfo) {
+      // 显示编辑对话框
+      this.editDialogVisible = true
+      // 获取被编辑用户的id
+      this.editUserId = userInfo.id
+      this.editRuleForm.name = userInfo.username
+      console.log(userInfo)
+      // 获取被编辑用户信息
+      const { data: res } = await this.$http.req(`users/${userInfo.id}`, 'get')
+      console.log(res)
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取用户信息失败！')
+      }
+      // 将获取到的用户信息重新赋值
+      this.editRuleForm.email = res.data.email
+      // 将获取到的用户信息重新赋值
+      this.editRuleForm.mobile = res.data.mobile
+    },
+    // 编辑用户对话框的确认按钮被按下时触发
+    editUserInfo () {
+      this.$refs.editRefForm.validate(async (valid) => {
+        if (!valid) return
+        // 发起编辑用户的网络请求
+        const { data: res } = await this.$http.req(
+          `users/${this.editUserId}`,
+          'put',
+          this.editRuleForm
+        )
+        if (res.meta.status !== 200) {
+          return this.$message.error('编辑用户信息失败')
+        }
+        this.$message.success('编辑用户信息成功')
+        // 重置编辑用户输入框字段
+        this.$refs.editRefForm.resetFields()
+        // 关闭编辑用户对话框
+        this.editDialogVisible = false
+        // 更新用户信息列表
+        this.getUserList()
+      })
+    },
+    // 点击编辑用户对话窗中的取消按钮触发
+    editCloseDialog () {
+      // 重置表单
+      this.$refs.editRefForm.resetFields()
+    },
+    // 删除用户
+    async removeUser (userInfo) {
+      const str = await this.$confirm(
+        '此操作将永久删除该文件, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch((error) => error)
+      // 如果str返回的是cancel那么提示用户取消操作
+      if (str !== 'confirm') return this.$message('您已取消删除')
+      // 删除数据
+      const { data: res } = await this.$http.req(
+        `users/${userInfo.id}`,
+        'delete'
+      )
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除用户失败')
+      }
+      this.$message.success('删除用户成功')
+      // 更新用户信息列表
+      this.getUserList()
     }
   }
 }

@@ -27,6 +27,8 @@ function req (path, mode, object) {
     return instance.post(path, object)
   } else if (mode === 'put') {
     return instance.put(path, object)
+  } else if (mode === 'delete') {
+    return instance.delete(path, object)
   }
 }
 

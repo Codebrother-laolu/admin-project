@@ -7,20 +7,14 @@
 
 <script>
 export default {
-  components: {
-
-  },
+  components: {},
   data () {
-    return {
-
-    }
+    return {}
   },
-  created () {
-
-  }
+  created () {},
+  methods: {}
 }
 </script>
 
 <style lang="less">
-
 </style>
